@@ -13,10 +13,11 @@ const serviceAccount = require('./key/key.json');
 const express = require('express');
 const app = express();
 
-const { signup } = require('./handlers/users');
+const { signup, login } = require('./handlers/users');
 
 // Users handle
 app.post('/signup', signup);
+app.post('/login', login);
 
 // todos handle
 app.get('/todos', (req, res) => {
