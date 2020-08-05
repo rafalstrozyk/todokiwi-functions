@@ -6,6 +6,8 @@ firebase.initializeApp(config);
 
 const { user } = require('firebase-functions/lib/providers/auth');
 
+const {validateSignupData} = require('../utils/validators')
+
 // Sign user up
 
 exports.signup = (req, res) => {
@@ -16,7 +18,8 @@ exports.signup = (req, res) => {
 		userName: req.body.userName
 	};
 
-	// TODO valids and errors
+    const {errors, valid} = validateSignupData(newUser);
+    if(!valid) return res.status(400).json(errors);
 
 	let token, userId;
 	db.doc(`/users/${newUser.userName}`)
