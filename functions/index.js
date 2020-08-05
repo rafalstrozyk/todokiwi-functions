@@ -1,14 +1,8 @@
 const functions = require('firebase-functions');
-//const admin = require('firebase-admin');
 const { db } = require('./utils/admin');
 require('dotenv').config();
 
 const serviceAccount = require('./key/key.json');
-
-// admin.initializeApp({
-// 	credential: admin.credential.cert(serviceAccount),
-// 	databaseURL: process.env.REACT_APP_BASEURL
-// });
 
 const express = require('express');
 const app = express();

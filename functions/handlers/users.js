@@ -6,10 +6,12 @@ firebase.initializeApp(config);
 
 const { user } = require('firebase-functions/lib/providers/auth');
 
-const {validateSignupData} = require('../utils/validators')
+const {
+	validateSignupData,
+	validateLoginData
+} = require('../utils/validators');
 
 // Sign user up
-
 exports.signup = (req, res) => {
 	const newUser = {
 		email: req.body.email,
@@ -18,8 +20,8 @@ exports.signup = (req, res) => {
 		userName: req.body.userName
 	};
 
-    const {errors, valid} = validateSignupData(newUser);
-    if(!valid) return res.status(400).json(errors);
+	const { errors, valid } = validateSignupData(newUser);
+	if (!valid) return res.status(400).json(errors);
 
 	let token, userId;
 	db.doc(`/users/${newUser.userName}`)
@@ -68,7 +70,8 @@ exports.login = (req, res) => {
 		password: req.body.password
 	};
 
-	// TODO validations
+	const { errors, valid } = validateLoginData(user);
+	if (!valid) return res.status(400).json(errors);
 
 	firebase
 		.auth()
