@@ -11,8 +11,8 @@ const app = express();
 
 const fbAuth = require('./utils/fbAuth');
 const { signup, login } = require('./handlers/users');
-const { createColumn, getColumns } = require('./handlers/userColumn');
-const { createTodo, getTodos } = require('./handlers/todos');
+const { createColumn, getColumns, deleteColumn } = require('./handlers/userColumn');
+const { createTodo, getTodos,deleteTodo } = require('./handlers/todos');
 
 // Users handle
 app.post('/signup', signup);
@@ -21,10 +21,12 @@ app.post('/login', login);
 // columns handle
 app.post('/column', fbAuth, createColumn);
 app.get('/columns', fbAuth, getColumns);
+app.delete('/column', fbAuth, deleteColumn);
 
 // todos handle
 app.post('/todo', fbAuth, createTodo);
 app.get('/todos', fbAuth, getTodos);
+app.delete('/todo', fbAuth, deleteTodo);
 
 app.get('/todos', (req, res) => {
 	db.collection('todo')

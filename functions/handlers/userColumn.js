@@ -36,8 +36,8 @@ exports.getColumns = (req, res) => {
 				let userColumns = [];
 				data.forEach((doc) => {
 					userColumns.push({
-                        columnId: doc.id,
-                        createdAt: doc.data().createdAt,
+						columnId: doc.id,
+						createdAt: doc.data().createdAt,
 						title: doc.data().title,
 						todos: doc.data().todos,
 						userName: doc.data().userName
@@ -51,4 +51,50 @@ exports.getColumns = (req, res) => {
 		});
 };
 
+exports.deleteColumn = (req, res) => {
+	if (req.body.columnId.split() === '') {
+		return res.status(400).json({ columnId: 'Column id must not be empty' });
+	}
 
+	const column = db.collection('columns').doc(req.body.columnId);
+
+	column
+		.get()
+		.then((doc) => {
+			if (doc.exists) {
+				if (doc.data().userName !== req.user.userName) {
+					return res.status(403).json({ error: 'Unauthorized' });
+				} else {
+					db.collection('todo')
+						.where('userName', '==', req.user.userName)
+						.where('columnId', '==', req.body.columnId)
+						.get()
+						.then((document) => {
+							const batch = db.batch();
+
+							document.forEach((doc) => {
+								batch.delete(doc.ref);
+							});
+
+							return batch.commit();
+						})
+						.then(() => {
+							column.delete();
+						})
+						.then(() => {
+							res.json({ message: 'Column and todos deleted succesfully' });
+						})
+						.catch((err) => {
+							console.error(err);
+							res.status(500).json({ error: err.code });
+						});
+				}
+			} else {
+				console.log('No such document!');
+				return res.status(404).json({ message: 'No such column' });
+			}
+		})
+		.catch((err) => {
+			console.log('Error getting document: ' + err);
+		});
+};
