@@ -90,3 +90,16 @@ exports.login = (req, res) => {
 				.json({ general: 'Wrong credentials, please try again' });
 		});
 };
+
+exports.logout = (req, res) => {
+	firebase
+		.auth()
+		.signOut()
+		.then(() => {
+			return res.json({ message: 'Logout succesfully' });
+		})
+		.catch((err) => {
+			console.error(err);
+			res.status(500).json({ error: err.code });
+		});
+};
