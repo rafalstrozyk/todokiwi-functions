@@ -11,7 +11,7 @@ const { signup, login, logout } = require('./handlers/users');
 const { createColumn, getColumns, deleteColumn } = require('./handlers/userColumn');
 const { createTodo, getTodos,deleteTodo } = require('./handlers/todos');
 
-app.use(cors);
+app.use(cors());
 
 // Users handle
 app.post('/signup', signup);
